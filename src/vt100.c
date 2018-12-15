@@ -941,8 +941,9 @@ void vt_out(int ch, wchar_t wc)
   if (!ch)
     return;
 
-  if (last_ch == '\n'
-      && vt_line_timestamp != TIMESTAMP_LINE_OFF)
+  if (last_ch == '\n')
+  {
+    if(vt_line_timestamp != TIMESTAMP_LINE_OFF)
     {
       struct timeval tmstmp_now;
       static struct timeval tmstmp_last;
@@ -991,7 +992,21 @@ void vt_out(int ch, wchar_t wc)
           tmstmp_last = tmstmp_now;
         }
     }
+    else if(vt_docap == 1)
+    {
+      struct timeval tmstmp_now;
+      struct tm tmstmp_tm;
+      char s[36];
+      gettimeofday(&tmstmp_now, NULL);
+      localtime_r(&tmstmp_now.tv_sec, &tmstmp_tm);
 
+      strftime(s, sizeof(s), "[%F %T", &tmstmp_tm);
+      fputs(s, capfp);
+      snprintf(s, sizeof(s), ".%03ld] ", tmstmp_now.tv_usec / 1000);
+      fputs(s, capfp);
+    }
+  }
+  
   c = (unsigned char)ch;
   last_ch = c;
 
