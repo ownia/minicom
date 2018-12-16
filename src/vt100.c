@@ -992,7 +992,7 @@ void vt_out(int ch, wchar_t wc)
           tmstmp_last = tmstmp_now;
         }
     }
-    else if(vt_docap == 1)
+    else if((P_CAP_TIMESTAMP[0] == 'Y') && (vt_docap == 1))
     {
       struct timeval tmstmp_now;
       struct tm tmstmp_tm;
