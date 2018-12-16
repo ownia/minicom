@@ -1085,7 +1085,6 @@ int main(int argc, char **argv)
   int quit = 0;			/* 'q' or 'x' pressed */
   char *s, *bufp;		/* Scratch pointers */
   int doinit = 1;		/* -o option */
-  char capname[128];		/* Name of capture file */
   struct passwd *pwd;		/* To look up user name */
   char *use_port;		/* Name of initialization file */
   char *args[20];		/* New argv pointer */
@@ -1152,7 +1151,6 @@ int main(int argc, char **argv)
   display_hex = 0;
   option_T_used = 0;
   local_echo = 0;
-  strcpy(capname, "minicom.cap");
   lockfile[0] = 0;
   tempst = 0;
   st = NULL;
@@ -1580,6 +1578,17 @@ int main(int argc, char **argv)
   if (cmd_dial)
     dialone(cmd_dial);
 
+  if ((P_CAP_ENABLE[0] == 'Y') && (capfp == (FILE *)0) && !docap)
+    {
+      capfp = fopen(P_CAP_FILE_PATH, "a");
+      if (capfp == NULL) {
+        fprintf(stderr, _("Cannot open capture file\n"));
+        exit(1);
+      }
+      docap = 1;
+      vt_set(addlf, -1, docap, -1, -1, -1, -1, -1, addcr);
+    }
+
   set_local_echo(local_echo);
   set_addlf(addlf);
   set_line_timestamp(line_timestamp);
@@ -1660,7 +1669,7 @@ dirty_goto:
         break;
       case 'l': /* Capture file */
         if (capfp == (FILE *)0 && !docap) {
-          s = input(_("Capture to which file? "), capname);
+          s = input(_("Capture to which file? "), P_CAP_FILE_PATH);
           if (s == NULL || *s == 0)
             break;
           if ((capfp = fopen(s, "a")) == (FILE *)NULL) {

@@ -176,6 +176,10 @@ enum config_type {
 #define P_RS485_DEL_RTS_BEF_SND mpars[98].value  /* RS485 Delay rts before send */
 #define P_RS485_DEL_RTS_AFT_SND mpars[99].value  /* RS485 Delay rts after send */
 
+#define P_CAP_ENABLE    mpars[100].value  /* Enable capture */
+#define P_CAP_FILE_PATH mpars[101].value  /* Capture file path */
+#define P_CAP_TIMESTAMP mpars[102].value  /* Add timestamp */
+
 /* fmg - macros struct */
 
 #define P_MAC1          mmacs[0].value

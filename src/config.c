@@ -351,6 +351,54 @@ static void dopath(void)
   }
 }
 
+static void docapture(void)
+{
+  WIN *w;
+  int c;
+  char *capture_enable    = _(" A - Capture enable    :");
+  char *capturefile_path  = _(" B - Capture file path :");
+  char *capture_timestamp = _(" C - Timestamp enable  :");
+  char *question          = _("Change which setting?");
+
+  w = mc_wopen(5, 5, 75, 9, BDOUBLE, stdattr, mfcolor, mbcolor, 0, 0, 1);
+  mc_wprintf(w, "%s %s\n", capture_enable, _(P_CAP_ENABLE));
+  mc_wprintf(w, "%s %.44s\n", capturefile_path, P_CAP_FILE_PATH);
+  mc_wprintf(w, "%s %s\n", capture_timestamp, _(P_CAP_TIMESTAMP));
+
+  mc_wlocate(w, 3, 4);
+  mc_wputs(w, question);
+
+  mc_wredraw(w, 1);
+
+  while(1) {
+    mc_wlocate(w, mbswidth(question) + 3, 5);
+    c = rwxgetch();
+    switch(c) {
+      case '\n':
+        mc_wclose(w, 1);
+        return;
+      case 'A':
+        strcpy(P_CAP_ENABLE, yesno(P_CAP_ENABLE[0] == 'N'));
+        mc_wlocate(w, mbswidth(capture_timestamp) + 1, 0);
+        mc_wprintf(w, "%s ", _(P_CAP_ENABLE));
+        markch(P_CAP_ENABLE);
+        break;
+      case 'B':
+        pgets(w, mbswidth(capturefile_path) + 1, 1, P_CAP_FILE_PATH, 64, 64, 1);
+        markch(P_CAP_FILE_PATH);
+        break;
+      case 'C':
+        strcpy(P_CAP_TIMESTAMP, yesno(P_CAP_TIMESTAMP[0] == 'N'));
+        mc_wlocate(w, mbswidth(capture_timestamp) + 1, 2);
+        mc_wprintf(w, "%s ", _(P_CAP_TIMESTAMP));
+        markch(P_CAP_TIMESTAMP);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 const char *yesno(int k)
 {
   return(k ? N_("Yes") : N_("No "));
@@ -1437,6 +1485,7 @@ static void donamsave(void)
 
 static void (*funcs1[])(void) = {
   dopath,
+  docapture,
   doproto,
   doserial,
   domodem,
@@ -1451,6 +1500,7 @@ char save_setup_as_menu[64];
 
 static char const *menu1[] = {
   N_("Filenames and paths"),
+  N_("Capture file"),
   N_("File transfer protocols"),
   N_("Serial port setup"),
   N_("Modem and dialing"),

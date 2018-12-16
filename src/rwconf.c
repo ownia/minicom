@@ -197,6 +197,11 @@ struct pars mpars[] = {
   { "0",		0,    "rs485delbefsnd" },
   { "0",		0,    "rs485delaftsnd" },
 
+  /* Capture parameters */
+  { N_("No"),		      0,    "captureenable" },
+  { "minicom.cap",		0,    "capturefilepath" },
+  { N_("No"),		      0,    "capturetimestamp" },
+
   /* That's all folks */
   { "",                 0,         NULL },
 };
