@@ -1,6 +1,8 @@
 minicom TODO list
 -----------------
 
+* Transmit delay has no influence on macros
+
 important:
 
 * update/complete existing translations, see also
