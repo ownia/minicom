@@ -1657,6 +1657,15 @@ int main(int argc, char **argv)
   if (doinit)
     modeminit();
 
+  if (geteuid() == 0) {
+    mc_wprintf(us, "\n%s\r\n", _("##################################################################"));
+    mc_wprintf(us, "%s\r\n", _("#                                                                #"));
+    mc_wprintf(us, "%s\r\n", _("#   WARNING: minicom is running as root. This is not necessary   #"));
+    mc_wprintf(us, "%s\r\n", _("#   and is highly discouraged. Please avoid running as root.     #"));
+    mc_wprintf(us, "%s\r\n", _("#                                                                #"));
+    mc_wprintf(us, "%s\r\n", _("##################################################################"));
+  }
+
   mc_wprintf(us, "\n%s %s\r\n", _("Welcome to minicom"), VERSION);
   mc_wprintf(us, "\n%s: %s\r\n", _("OPTIONS"), option_string);
 #if defined (__DATE__) && defined (__TIME__)
