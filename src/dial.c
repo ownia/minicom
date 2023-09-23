@@ -228,8 +228,7 @@ void mputs(const char *s, int how)
     if (how == 0 && c == '~')
       sleep(1);
     else
-      if (write(portfd, &c, 1) != 1)
-        break;
+      vt_send(c);
     s++;
   }
 }
