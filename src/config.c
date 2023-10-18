@@ -59,6 +59,12 @@ void read_parms(void)
     fclose(fp);
   }
 
+  /* Read specific parameters */
+  if ((fp = fopen(sparfile, "r")) != NULL) {
+    readpars(fp, CONFIG_SPECIFIC);
+    fclose(fp);
+  }
+
   /* fmg - set colors from read values (Jcolor Xlates name to #) */
   mfcolor = Jcolor(P_MFG); mbcolor = Jcolor(P_MBG);
   tfcolor = Jcolor(P_TFG); tbcolor = Jcolor(P_TBG);

@@ -310,7 +310,9 @@ int readpars(FILE *fp, enum config_type conftype)
       if (strcmp(p->value, s) == 0) {
         p->flags &= ~CHANGED;
       } else {
-        p->flags |= conftype == CONFIG_GLOBAL ? ADM_CHANGE : USR_CHANGE;
+        /* Do not update config when CONFIG_SPECIFIC */
+        if (conftype != CONFIG_SPECIFIC)
+          p->flags |= conftype == CONFIG_GLOBAL ? ADM_CHANGE : USR_CHANGE;
         strncpy(p->value, s, sizeof(p->value) - 1);
         p->value[sizeof(p->value) - 1] = 0;
       }
@@ -321,7 +323,7 @@ int readpars(FILE *fp, enum config_type conftype)
     if (!matched) {
       fprintf (stderr,
                _("** Line %d of the %s config file is unparsable.\n"),
-               lineno, conftype == CONFIG_GLOBAL? _("global") : _("personal"));
+               lineno, conftype == CONFIG_GLOBAL? _("global") : _("personal/specific"));
       dosleep = 1;
     }
   }
