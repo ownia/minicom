@@ -1490,10 +1490,6 @@ int main(int argc, char **argv)
     /* init VT */
     vt_set(-1, -1, -1, -1, -1, -1, 1, -1, -1);
 
-  /* Avoid fraud! */
-  for (s = use_port; *s; s++)
-    if (*s == '/')
-      *s = '_';
   snprintf(parfile, sizeof(parfile), "%s/minirc.%s", CONFDIR, use_port);
 
   /* Get password file information of this user. */
@@ -1513,6 +1509,18 @@ int main(int argc, char **argv)
 
   /* Get personal parameter file */
   snprintf(pparfile, sizeof(pparfile), "%s/.minirc.%s", homedir, use_port);
+
+  /* Get temporarily specific parameter file*/
+  if (use_port[0] == '/') {
+    /* absolute path */
+    snprintf(sparfile, sizeof(sparfile), "%s", use_port);
+  } else {
+    /* relative path */
+    char absolute_path[PATH_MAX];
+    memset(absolute_path, 0, sizeof(absolute_path));
+    if (realpath(use_port, absolute_path) != NULL)
+      snprintf(sparfile, sizeof(sparfile), "%s", absolute_path);
+  }
 
   read_parms();
   num_hist_lines = atoi(P_HISTSIZE);

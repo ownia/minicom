@@ -61,6 +61,7 @@ extern struct macs mmacs[];
 enum config_type {
   CONFIG_GLOBAL,
   CONFIG_PERSONAL,
+  CONFIG_SPECIFIC,
 };
 
 #define ADM_CHANGE	1
