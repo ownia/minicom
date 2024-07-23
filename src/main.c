@@ -352,9 +352,11 @@ static int device_open()
 
 void device_close()
 {
-  lockfile_remove();
   if (portfd > 0)
-    close(portfd);
+    {
+      lockfile_remove();
+      close(portfd);
+    }
   portfd = -1;
 }
 
