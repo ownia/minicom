@@ -3,6 +3,8 @@ This file lists the most important changes to
 the previous released version. For a full list of changes
 please refer to the ChangeLog file.
 
+New for version 2.10+:
+
 New for version 2.10:
  - Add third locking method if file-based lock does not work.
    https://salsa.debian.org/minicom-team/minicom/-/issues/9
