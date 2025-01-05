@@ -258,6 +258,34 @@ void vt_set(int addlf, int wrap, int docap, int bscode,
     vt_addcr = addcr;
 }
 
+/**
+ * Insert CR before LF an and LF after CR if configured.
+ *
+ * See vt_addcr and vt_addlf.
+ *
+ * @param s source array
+ * @param len source array length
+ * @param buf output buffer
+ * @return actual number of chars in buf
+ **/
+static int insert_crlf(const char *s, int len, char *buf)
+{
+  int buf_index = 0;
+  for (int i = 0; i < len; i++) {
+      if (vt_addcr && s[i] == '\n') {
+          buf[buf_index++] = '\r';
+      }
+
+      buf[buf_index++] = s[i];
+
+      if (vt_addlf && s[i] == '\r') {
+          buf[buf_index++] = '\n';
+      }
+  }
+
+  return buf_index;
+}
+
 /* Output a string to the modem. */
 static void v_termout(const char *s, int len)
 {
@@ -266,13 +294,17 @@ static void v_termout(const char *s, int len)
   if (vt_echo) {
     for (p = s; *p; p++) {
       vt_out(*p, 0);
-      if (!vt_addlf && *p == '\r')
+      if (vt_addlf && *p == '\r') {
         vt_out('\n', 0);
+      }
     }
     mc_wflush();
   }
 
-  (*termout)(s, len);
+  char buf[len * 2];
+  int buf_size_with_crlf = insert_crlf(s, len, buf);
+
+  (*termout)(buf, buf_size_with_crlf);
 }
 
 /*
@@ -1019,9 +1051,7 @@ void vt_out(int ch, wchar_t wc)
       v_termout(P_ANSWERBACK, 0);
       break;
     case '\r': /* Carriage return */
-      mc_wputc(vt_win, c);
-      if (vt_addlf)
-        output_c('\n');
+      output_c(c);
       break;
     case '\t': /* Non - destructive TAB */
       /* Find next tab stop. */
@@ -1058,8 +1088,6 @@ void vt_out(int ch, wchar_t wc)
       esc_s = 2;
       break;
     case '\n':
-      if(vt_addcr)
-        mc_wputc(vt_win, '\r');
       output_c(c);
       break;
     case '\b':
